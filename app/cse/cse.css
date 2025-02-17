@@ -5,11 +5,45 @@
     background: #111;
     color: #fff;
     overflow: hidden;
-}
+    position: relative;
+    padding-top: 20px;
+  }
+  
+  /* 📌 Button to Toggle Sidebar */
+  .toggle-sidebar-btn {
+    position: fixed;
+    top: 150px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background-color: #ff5733;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .toggle-sidebar-btn svg {
+    display: block;  /* Ensure the icon is treated as a block element */
+    margin: 0 auto;  /* Centers the icon */
+    width: 24px;     /* Icon width */
+    height: 24px;    /* Icon height */
+  }
 
-/* 📌 Left Side Navbar */
-.side-navbar {
-    width: 240px;
+  /* Hover effect for button */
+  .toggle-sidebar-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  /* 📌 Left Side Navbar */
+  .side-navbar {
+    width: 20%; /* Sidebar width */
     height: 100vh;
     background: linear-gradient(135deg, #1e1e1e, #333);
     display: flex;
@@ -19,11 +53,19 @@
     padding-top: 8%;
     position: fixed;
     left: 0;
-    top: 0;
-}
-
-/* 🎯 Navbar Items */
-.nav-item {
+    top: 75px;
+    transition: transform 0.3s ease-in-out;
+    z-index: 30;
+    transform: translateX(-100%); /* Hidden by default */
+  }
+  
+  /* 📌 Visible Sidebar */
+  .side-navbar.visible {
+    transform: translateX(0); /* Sidebar is visible */
+  }
+  
+  /* 🎯 Navbar Items */
+  .nav-item {
     width: 90%;
     padding: 12px;
     margin: 10px 0;
@@ -37,76 +79,109 @@
     transition: all 0.3s ease-in-out;
     border-radius: 8px;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-.nav-item:hover,
-.nav-item.active {
+  }
+  
+  /* Active and hover states for nav items */
+  .nav-item:hover,
+  .nav-item.active {
     background: #ff5733;
     transform: scale(1.1);
     box-shadow: 0px 0px 12px rgba(255, 87, 51, 0.6);
-}
-
-/* ✅ Right Content Area (Fixes Overlapping Issue) */
+  }
+ /* ✅ Right Content Area */
 .content-area {
-    flex: 1; /* Takes up remaining space */
-    padding: 40px;
-    margin-left: 240px; /* Content starts AFTER the navbar */
-    margin-top: 80px; /* Push content DOWN to avoid overlapping */
-    width: calc(100% - 240px);
-    height: calc(100vh - 80px); /* Adjust height to fit */
-    overflow-y: auto;
-}
-
-/* 🎨 Content Box Styling */
-.content-box {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease-in-out;
-}
-
-/* 🛠️ Header Styling (Properly Spaced) */
-.content-area h2 {
+    flex: 1;
+    margin-left: 20%; /* Adjust space for sidebar */
+    padding: 20px; /* More padding for better spacing */
+    margin-top: 80px; /* Push content down to avoid overlap with the top */
+    height: calc(100vh - 80px); /* Full height minus top margin */
+    overflow-y: auto; /* Allow scrolling */
+    padding-bottom: 60px; /* Add padding to make sure text doesn't go behind footer */
+    box-sizing: border-box; /* Ensure padding does not affect width */
+    transition: margin-left 0.3s ease, padding 0.3s ease; /* Smooth transition */
+  }
+  
+  /* 🎯 Shifted Content (when sidebar is visible) */
+  .content-area.shifted {
+    margin-left: 0; /* Shift content when sidebar is visible */
+    padding-left: 10px; /* Slight left padding for when sidebar hides */
+  }
+  
+  /* 🎨 Content Box Styling */
+  .content-box {
+    background: rgba(255, 255, 255, 0.1); /* Slight transparency */
+    padding: 32px; /* More padding for content */
+    border-radius: 10px; /* Rounded corners */
+    backdrop-filter: blur(10px); /* Smooth blur effect */
+    box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.1); /* Light shadow */
+    transition: all 0.3s ease-in-out; /* Smooth transition for all changes */
+    margin-top: 0px; /* Top margin for spacing */
+    margin-bottom: 20px; /* Bottom margin for spacing */
+  }
+  
+  /* 🛠️ Header Styling (Properly Spaced) */
+  .content-area h2 {
     color: #ff5733;
     font-size: 24px;
-    margin-bottom: 15px;
-}
-
-/* 📝 Text Content */
-.content-box p {
+    margin-bottom: 15px; /* Space between heading and paragraph */
+  }
+  
+  /* 📝 Text Content */
+  .content-box p {
     color: #ddd;
     font-size: 16px;
-    line-height: 1.6;
-}
-
-/* 🎯 Responsive Design (For Smaller Screens) */
-@media (max-width: 768px) {
+    line-height: 1.6; /* Proper line height for readability */
+  }
+  
+  /* 🎯 Responsive Design for Smaller Screens */
+  @media (max-width: 768px) {
     .side-navbar {
-        width: 200px;
+      width: 220px; /* Smaller sidebar for tablets */
     }
-
+  
     .content-area {
-        margin-left: 200px;
-        width: calc(100% - 200px);
-        margin-top: 100px; /* Push content further for mobile */
+      margin-left: 0; /* Full width when sidebar is hidden */
+      margin-top: 100px;
     }
-}
-
-@media (max-width: 480px) {
+  
+    /* Button to toggle sidebar only on mobile */
+    .toggle-sidebar-btn {
+      display: block;
+    }
+    
+    /* Sidebar is hidden by default on mobile */
     .side-navbar {
-        width: 160px;
+      transform: translateX(-100%);
     }
-
+  
+    /* Hide sidebar button and sidebar content for smaller screens */
+    .side-navbar.visible {
+      transform: translateX(0);
+    }
+  }
+  
+  /* Mobile view */
+  @media (max-width: 480px) {
+    .side-navbar {
+      width: 160px; /* Even smaller for phones */
+    }
+  
     .content-area {
-        margin-left: 160px;
-        width: calc(100% - 160px);
-        margin-top: 120px; /* Push even more for small screens */
+      margin-left: 0; /* Full width for content */
+      margin-top: 120px; /* Adjust for mobile */
     }
-
+    
     .nav-item {
-        font-size: 14px;
-        padding: 10px;
+      font-size: 14px;
+      padding: 10px;
     }
-}
+  
+    .content-area h2 {
+      font-size: 20px;
+    }
+  
+    .content-box p {
+      font-size: 14px;
+    }
+  }
+  

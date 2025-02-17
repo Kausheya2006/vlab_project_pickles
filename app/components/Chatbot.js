@@ -1,14 +1,15 @@
 "use client";
-import { useState } from "react";
-import { FaComments } from "react-icons/fa"; // You can use any icon you like
-import './Chatbot.css'
-import { FaPaperPlane } from "react-icons/fa"; // Send icon
-import Image from "next/image";
+import React, { useState } from "react";
+import { FaComments, FaPaperPlane } from "react-icons/fa";
+import Image from "next/image"; // For handling images
+import './Chatbot.css';
 
 export default function Chatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [reply, setReply] = useState('');
+  const [messages, setMessages] = useState([
+    { sender: "bot", text: "Hello! How can I assist you today?" },
+  ]);
 
   // Toggle the chat window open and close
   const toggleChat = () => {
@@ -16,13 +17,19 @@ export default function Chatbot() {
   };
 
   const sendMessage = async () => {
+    const newMessage = { sender: "user", text: message };
+    setMessages([...messages, newMessage]);
+
     const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message }),
     });
     const data = await res.json();
-    setReply(data.reply);
+
+    const botMessage = { sender: "bot", text: data.response };
+    setMessages((prevMessages) => [...prevMessages, botMessage]);
+    setMessage('');
   };
 
   return (
@@ -39,21 +46,37 @@ export default function Chatbot() {
       {isOpen && (
         <div className="chatbot-container">
           <div className="chatbot-header">
-            <span>Chat with us</span>
+            <span>Virtual Labs Chatbot</span>
             <button className="close-button" onClick={toggleChat}>x</button>
           </div>
           <div className="chatbot-body">
-          <Image src="/chatbot_img.jpg" alt="Chatbot" width={150} height={150} className="m-auto" />
-          <input
+            {/* Chatbot Image */}
+            <Image src="/chatbot_img.jpg" alt="Chatbot" width={150} height={150} className="m-auto rounded-full" />
+            
+            {/* Display Messages */}
+            <div className="messages-container">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`message ${
+                    msg.sender === "user"
+                      ? "bg-green-500/50 text-black text-right"
+                      : "bg-blue-500/50 text-black text-left"
+                  } p-3 rounded-lg mb-2 max-w-xs`}
+                >
+                  {msg.text}
+                </div>
+              ))}
+            </div>
+
+            {/* User Input */}
+            <input
               type="text"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message..."
             />
             <button onClick={sendMessage}><FaPaperPlane className="send-icon" /></button>
-            <div>
-              <strong>Reply:</strong> {reply}
-            </div>
           </div>
         </div>
       )}

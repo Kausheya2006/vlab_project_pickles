@@ -4,6 +4,8 @@
     color: #fff;
     background: linear-gradient(135deg, #0e153a, #1b2845);
     padding-bottom: 50px;
+    padding-top: 80px; /* Add top padding to prevent overlap with navbar */
+
   }
   
   /* Hero Section */
