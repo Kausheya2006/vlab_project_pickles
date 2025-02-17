@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import "./cse.css"; // Custom styles for the page
+import { FiMenu, FiX } from "react-icons/fi";
 
 const sections = [
   {
@@ -73,11 +74,22 @@ const sections = [
 
 const CSEPage = () => {
   const [activeSection, setActiveSection] = useState(sections[0]);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Sidebar visibility state
+
+  const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible); // Toggle function
 
   return (
     <div className="cse-page">
+      {/* Button to Toggle Sidebar */}
+      <button className="toggle-sidebar-btn" onClick={toggleSidebar}>
+  {isSidebarVisible ? <FiX size={24} /> : <FiMenu size={24} />}
+</button>
+
       {/* Left Vertical Navbar */}
-      <nav className="side-navbar">
+      <nav
+        className={`side-navbar ${isSidebarVisible ? "visible" : ""}`}
+        onClick={toggleSidebar}
+      >
         {sections.map((section, index) => (
           <button
             key={index}
@@ -90,7 +102,7 @@ const CSEPage = () => {
       </nav>
 
       {/* Right Content Area */}
-      <div className="content-area">
+      <div className={`content-area shifted`}>
         {activeSection.content}
       </div>
     </div>
@@ -98,3 +110,5 @@ const CSEPage = () => {
 };
 
 export default CSEPage;
+
+
