@@ -1,6 +1,8 @@
-import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
-import { withIronSessionApiRoute } from "iron-session"; // Adjusted import
 import dotenv from "dotenv";
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from "@google/generative-ai";
+
+// Dynamically import `iron-session` to support ES modules
+const { withIronSession } = await import("iron-session");
 
 dotenv.config();
 
@@ -44,12 +46,10 @@ const chatRoute = async (req, res) => {
   if (!userInput) return res.status(400).json({ error: "Invalid input" });
 
   try {
-    // Use session from next-iron-session
+    // Use session from iron-session
     const chatHistory = req.session.chatHistory || [{ role: "user", text: "How can I assist you?" }];
-
     const aiResponse = await runChat(userInput, chatHistory);
 
-    // Save the updated chat history in session
     req.session.chatHistory = [
       ...chatHistory,
       { role: "user", text: userInput },
@@ -64,7 +64,8 @@ const chatRoute = async (req, res) => {
   }
 };
 
-export default withIronSessionApiRoute(chatRoute, {
+// Export the route wrapped with iron-session
+export default withIronSession(chatRoute, {
   password: process.env.SESSION_SECRET,
   cookieName: "vlab-chat-session",
   cookieOptions: {
