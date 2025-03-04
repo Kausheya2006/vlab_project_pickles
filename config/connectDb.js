@@ -1,17 +1,30 @@
 import mongoose from "mongoose";
 
+const MONGODB_URL = process.env.MONGODB_URL;
+
+if (!MONGODB_URL) {
+  throw new Error("❌ MONGODB_URL is not defined in environment variables");
+}
+
 const connectDb = async () => {
-  if (mongoose.connection.readyState === 1) {
-    console.log("MongoDB already connected");
+  if (mongoose.connection.readyState >= 1) {
+    console.log("✅ MongoDB already connected");
     return;
   }
 
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URL);
-    console.log(`MongoDB Connected: ${conn.connection.host}`);
+    await mongoose.connect(MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      maxPoolSize: 50, // Optimized pooling
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
+
+    console.log("✅ MongoDB Connected");
   } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1);
+    console.error("❌ MongoDB Connection Error:", error.message);
+    throw new Error("Database connection failed");
   }
 };
 
